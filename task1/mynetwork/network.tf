@@ -11,6 +11,7 @@ resource "google_compute_subnetwork" "public_subnet" {
   ip_cidr_range = "10.2.0.0/16"
   region        = "us-central1"
   network       = google_compute_network.vpc_network.id
+  private_ip_google_access = true
 }
 
 resource "google_compute_subnetwork" "private_subnet" {
@@ -19,6 +20,7 @@ resource "google_compute_subnetwork" "private_subnet" {
   ip_cidr_range = "10.3.0.0/16"
   region        = "us-central1"
   network       = google_compute_network.vpc_network.id
+  private_ip_google_access = true
 }
 
 resource "google_compute_router" "router" {

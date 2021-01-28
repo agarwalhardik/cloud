@@ -30,16 +30,16 @@ variable "private_subnet_name" {
 variable "public_subnet_name" {
 }
 
-resource "google_compute_address" "static1" {
+/*resource "google_compute_address" "static1" {
   name = "ipv4-address1"
 }
 
 resource "google_compute_address" "static2" {
   name = "ipv4-address2"
-}
+}*/
 
 resource "google_compute_instance" "instance1" {
-    depends_on = [ google_compute_address.static1 ]
+    //depends_on = [ google_compute_address.static1 ]
   name         = "php1"
   machine_type = "e2-medium"
   zone         = "us-central1-a"
@@ -48,7 +48,7 @@ resource "google_compute_instance" "instance1" {
 
   boot_disk {
     initialize_params {
-      image = "centos-7-v20210122"
+      image = "ubuntu-1604-xenial-v20210119"
     }
   }
 
@@ -60,7 +60,7 @@ resource "google_compute_instance" "instance1" {
     }
   }
 
-  metadata_startup_script = "yum install httpd php -y ; echo Hello PHP > /var/www/html/index.php ; systemctl start httpd"
+  metadata_startup_script = "apt install apache2 php php-sql wget ; wget https://wordpress.org/latest.tar.gz ; tar -xvf latest.tar.gz ; cp -R wordpress /var/www/html/ ; chown -R www-data:www-data /var/www/html/wordpress/ ; chmod -R 755 /var/www/html/wordpress/ ; mkdir /var/www/html/wordpress/wp-content/uploads ; chown -R www-data:www-data /var/www/html/wordpress/wp-content/uploads/ ; systemctl start apache2"
 
   /*metadata = {
     WORDPRESS_DB_HOST = var.WORDPRESS_DB_HOST
@@ -73,7 +73,7 @@ resource "google_compute_instance" "instance1" {
 }
 
 resource "google_compute_instance" "instance2" {
-    depends_on = [ google_compute_address.static2 ]
+    //depends_on = [ google_compute_address.static2 ]
   name         = "php2"
   machine_type = "e2-medium"
   zone         = "us-central1-a"
@@ -82,16 +82,16 @@ resource "google_compute_instance" "instance2" {
 
   boot_disk {
     initialize_params {
-      image = "centos-7-v20210122"
+      image = "ubuntu-1604-xenial-v20210119"
     }
   }
-  metadata_startup_script = "yum install httpd php -y ; echo Hello PHP > /var/www/html/index.php ; systemctl start httpd"
+  metadata_startup_script = "apt install apache2 php php-sql wget ; wget https://wordpress.org/latest.tar.gz ; tar -xvf latest.tar.gz ; cp -R wordpress /var/www/html/ ; chown -R www-data:www-data /var/www/html/wordpress/ ; chmod -R 755 /var/www/html/wordpress/ ; mkdir /var/www/html/wordpress/wp-content/uploads ; chown -R www-data:www-data /var/www/html/wordpress/wp-content/uploads/ ; systemctl start apache2"
 
   network_interface {
     network = var.vpc_name
     subnetwork = var.public_subnet_name
     access_config {
-      nat_ip = google_compute_address.static2.address
+      //nat_ip = google_compute_address.static2.address
     }
   }
 
@@ -115,13 +115,14 @@ resource "google_compute_instance" "db_instance1" {
 
   boot_disk {
     initialize_params {
-      image = "centos-7-v20210122"
+      image = "ubuntu-1604-xenial-v20210119"
     }
   }
 
   network_interface {
     network = var.vpc_name
     subnetwork = var.private_subnet_name
+
   }
 
   /*metadata = {
